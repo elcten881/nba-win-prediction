@@ -4,26 +4,6 @@ NBA Win Prediction Project
 Overview
 This project builds a full pipeline for predicting NBA scores and win probabilities using team-level game logs from the official NBA Stats API. It includes automated data updating, cleaning, feature engineering, and model training.
 
-Project Structure
-nba-win-prediction/
-│
-├── data/
-│   ├── raw/
-│   ├── clean/
-│   │   ├── clean_game_nba.csv
-│   │   ├── clean_game_nba_updated.csv
-│
-├── notebooks/
-│
-├── src/
-│   ├── update_recent_games.py
-│   ├── data_cleaning.py
-│   ├── model_training.py
-│   ├── predict.py
-│
-├── README.md
-└── requirements.txt
-
 Requirements
 Install dependencies using:
 pip install -r requirements.txt
