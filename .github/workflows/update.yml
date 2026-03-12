@@ -1,35 +1,50 @@
-name: Auto Update
+name: Auto-update NBA data
 
 on:
   schedule:
-    - cron: "0 */6 * * *"   # runs every 6 hours
-  workflow_dispatch:        # lets you run it manually too
+    # Runs every day at 06:10 UTC (adjust as you wish)
+    - cron: "10 6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write   # <-- required to push changes back
 
 jobs:
-  run-script:
+  update:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0     # needed so we can commit & push
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          pip install pandas numpy scikit-learn joblib requests
 
-      - name: Run update script
+      - name: Run updater
+        env:
+          # Use workspace to be explicit about paths if needed
+          GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          python your_script_name.py
+          python scripts/auto_update.py
 
-      - name: Commit changes
+      - name: Commit & push if changed
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
-          git add -A
-          git commit -m "Auto update" || echo "No changes to commit"
-          git push
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git status --porcelain
+          if [ -n "$(git status --porcelain)" ]; then
+            git add -A
+            git commit -m "Auto-update: $(date -u +"%Y-%m-%d %H:%M:%S") UTC"
+            git push
+          else
+            echo "No changes to commit."
+          fi
