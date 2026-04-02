@@ -34,7 +34,7 @@ jobs:
           # Use workspace to be explicit about paths if needed
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          python auto_update.py
+          python auto_updater.py
 
       - name: Commit & push if changed
         run: |
