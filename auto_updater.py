@@ -81,8 +81,10 @@ for gdate in games:
     if cutoff.tzinfo is None:
         cutoff = cutoff.tz_localize("UTC")
 
-    if date < cutoff:
+
+    if date.value < cutoff.value:
         continue
+
 
     # ⬇️ process future games here
     new_rows.append(...)
