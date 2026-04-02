@@ -79,16 +79,16 @@ def fetch_json(url, headers=None, retries=3, timeout=20):
             time.sleep(2 * attempt)
 
 
-   data = fetch_json(SCHEDULE_URL, headers=HEADERS)
+data = fetch_json(SCHEDULE_URL, headers=HEADERS)
 
-    if not data:
-        print("[INFO] No data fetched from NBA API. Exiting successfully.")
-        sys.exit(0)
+if not data:
+    print("[INFO] No data fetched from NBA API. Exiting successfully.")
+    sys.exit(0)
 
-    games = data.get("leagueSchedule", {}).get("gameDates", [])
+games = data.get("leagueSchedule", {}).get("gameDates", [])
 
-    cutoff = pd.Timestamp.now(tz="UTC")
-    new_rows = []
+cutoff = pd.Timestamp.now(tz="UTC")
+new_rows = []
 
 for gdate in games:
     date_str = gdate.get("gameDate")
@@ -97,6 +97,7 @@ for gdate in games:
         date = pd.to_datetime(date_str, utc=True)
     except Exception:
         continue
+
 
     # Skip past dates (timezone-safe)
     if date.value < cutoff.value:
