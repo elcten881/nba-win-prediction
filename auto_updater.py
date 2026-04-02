@@ -68,24 +68,27 @@ def fetch_json(url, headers=None, retries=3, timeout=20):
             r = requests.get(url, headers=headers, timeout=timeout)
             r.raise_for_status()
             return r.json()
+
         except requests.RequestException as e:
             print(f"[WARN] Attempt {attempt}/{retries} failed: {e}")
+
             if attempt == retries:
-    print("[ERROR] NBA schedule API unreachable after retries. Skipping update.")
-    return None
+                print("[ERROR] NBA schedule API unreachable after retries. Skipping update.")
+                return None
 
             time.sleep(2 * attempt)
 
-data = fetch_json(SCHEDULE_URL, headers=HEADERS)
 
-if not data:
-    print("[INFO] No data fetched. Exiting successfully.")
-    sys.exit(0)
+    data = fetch_json(SCHEDULE_URL, headers=HEADERS)
 
-games = data.get("leagueSchedule", {}).get("gameDates", [])
+    if not data:
+        print("[INFO] No data fetched. Exiting successfully.")
+        sys.exit(0)
 
-cutoff = pd.Timestamp.now(tz="UTC")
-new_rows = []
+    games = data.get("leagueSchedule", {}).get("gameDates", [])
+
+    cutoff = pd.Timestamp.now(tz="UTC")
+    new_rows = []
 
 for gdate in games:
     date_str = gdate.get("gameDate")
