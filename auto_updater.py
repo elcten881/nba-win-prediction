@@ -79,7 +79,7 @@ def fetch_json(url, headers=None, retries=3, timeout=20):
             time.sleep(2 * attempt)
 
 
-    data = fetch_json(SCHEDULE_URL, headers=HEADERS)
+   data = fetch_json(SCHEDULE_URL, headers=HEADERS)
 
     if not data:
         print("[INFO] No data fetched from NBA API. Exiting successfully.")
