@@ -71,7 +71,9 @@ def fetch_json(url, headers=None, retries=3, timeout=20):
         except requests.RequestException as e:
             print(f"[WARN] Attempt {attempt}/{retries} failed: {e}")
             if attempt == retries:
-                raise
+    print("[ERROR] NBA schedule API unreachable after retries. Skipping update.")
+    return None
+
             time.sleep(2 * attempt)
 
 data = fetch_json(SCHEDULE_URL, headers=HEADERS)
