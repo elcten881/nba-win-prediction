@@ -62,17 +62,30 @@ data = fetch_json(SCHEDULE_URL, headers=HEADERS)
 games = data.get("leagueSchedule", {}).get("gameDates", [])
 
 cutoff = pd.Timestamp.now(tz="UTC")
-new_rows = []
 
 for gdate in games:
     date_str = gdate.get("gameDate")
+
     try:
         date = pd.to_datetime(date_str, utc=True)
     except Exception:
         continue
 
+    # Ensure date is UTC-aware (defensive)
+    if date.tzinfo is None:
+        date = date.tz_localize("UTC")
+    else:
+        date = date.tz_convert("UTC")
+
+    # cutoff safety (only needed once, but harmless here)
+    if cutoff.tzinfo is None:
+        cutoff = cutoff.tz_localize("UTC")
+
     if date < cutoff:
         continue
+
+    # ⬇️ process future games here
+    new_rows.append(...)
 
     for g in gdate.get("games", []):
         home = g.get("homeTeam") or {}
