@@ -29,12 +29,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install pandas numpy scikit-learn joblib requests
 
-      - name: Run updater
+      - name: Run auto update
         env:
           # Use workspace to be explicit about paths if needed
           GITHUB_WORKSPACE: ${{ github.workspace }}
         run: |
-          python scripts/auto_update.py
+          python auto_update.py
 
       - name: Commit & push if changed
         run: |
