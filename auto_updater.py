@@ -61,7 +61,7 @@ def fetch_json(url, headers=None, retries=3, timeout=20):
 data = fetch_json(SCHEDULE_URL, headers=HEADERS)
 games = data.get("leagueSchedule", {}).get("gameDates", [])
 
-cutoff = datetime.utcnow() - timedelta(days=7)  # use UTC in Actions
+cutoff = pd.Timestamp.utcnow()
 new_rows = []
 
 for gdate in games:
